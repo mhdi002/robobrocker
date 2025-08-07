@@ -284,55 +284,9 @@ def generate_stage2_report():
                                      start_date=start_date,
                                      end_date=end_date)
             
-            elif report_type == 'discrepancies':
-                # Generate discrepancies analysis
-                discrepancies = compare_crm_and_client_deposits(start_date, end_date)
-                
-                return render_template('discrepancies.html',
-                                     title='Deposit Discrepancies Analysis',
-                                     discrepancies=discrepancies,
-                                     start_date=start_date,
-                                     end_date=end_date)
-            
-            elif report_type == 'combined':
-                # Generate combined report (both original and stage2)
-                # Check if original files exist
-                original_files = ['deals', 'excluded', 'vip']
-                has_original = all(UploadedFiles.query.filter_by(
-                    user_id=current_user.id, file_type=ft).first() for ft in original_files)
-                
-                combined_results = {}
-                
-                if has_original:
-                    # Generate original report
-                    deals_file = UploadedFiles.query.filter_by(user_id=current_user.id, file_type='deals').first()
-                    excluded_file = UploadedFiles.query.filter_by(user_id=current_user.id, file_type='excluded').first()
-                    vip_file = UploadedFiles.query.filter_by(user_id=current_user.id, file_type='vip').first()
-                    
-                    deals_ext = deals_file.filename.rsplit('.', 1)[1].lower()
-                    deals_df = pd.read_excel(deals_file.file_path) if deals_ext == 'xlsx' else pd.read_csv(deals_file.file_path)
-                    
-                    excluded_ext = excluded_file.filename.rsplit('.', 1)[1].lower()
-                    excluded_df = pd.read_excel(excluded_file.file_path, header=None) if excluded_ext == 'xlsx' else pd.read_csv(excluded_file.file_path, header=None)
-                    
-                    vip_ext = vip_file.filename.rsplit('.', 1)[1].lower()
-                    vip_df = pd.read_excel(vip_file.file_path, header=None) if vip_ext == 'xlsx' else pd.read_csv(vip_file.file_path, header=None)
-                    
-                    original_results = run_report_processing(deals_df, excluded_df, vip_df, 
-                                                           start_date.strftime('%d.%m.%Y %H:%M:%S') if start_date else None,
-                                                           end_date.strftime('%d.%m.%Y %H:%M:%S') if end_date else None)
-                    combined_results['original'] = original_results
-                
-                # Generate Stage 2 report
-                stage2_report = generate_final_report(start_date, end_date)
-                combined_results['stage2'] = stage2_report
-                
-                return render_template('combined_results.html',
-                                     title='Combined Financial Report',
-                                     results=combined_results,
-                                     start_date=start_date,
-                                     end_date=end_date,
-                                     has_original=has_original)
+            else:
+                flash('Invalid report type selected.', 'danger')
+                return redirect(url_for('main.generate_stage2_report'))
         
         except Exception as e:
             flash(f'Error generating report: {str(e)}', 'danger')
