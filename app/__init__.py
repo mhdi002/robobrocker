@@ -2,13 +2,13 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
-from flask_bootstrap import Bootstrap5
+from flask_bootstrap5 import Bootstrap
 from config import Config
 
 db = SQLAlchemy()
 login_manager = LoginManager()
 migrate = Migrate()
-bootstrap = Bootstrap5()
+bootstrap = Bootstrap()
 
 def create_app(config_class=Config):
     app = Flask(__name__, instance_relative_config=True)
