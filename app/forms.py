@@ -86,9 +86,7 @@ class DateRangeForm(FlaskForm):
     report_type = SelectField('Report Type',
                              choices=[
                                  ('original', 'Original Deal Processing Report'),
-                                 ('stage2', 'Stage 2 Financial Report'),
-                                 ('combined', 'Combined Report'),
-                                 ('discrepancies', 'Deposit Discrepancies Analysis')
+                                 ('stage2', 'Stage 2 Financial Report')
                              ],
                              validators=[DataRequired()])
     
