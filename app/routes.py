@@ -276,7 +276,7 @@ def generate_stage2_report():
                 # Generate Stage 2 specific charts
                 stage2_charts = create_stage2_charts(chart_data)
                 
-                return render_template('stage2_results.html',
+                return render_template('stage2_results_enhanced.html',
                                      title='Financial Summary Report',
                                      report=report,
                                      chart_data=chart_data,
