@@ -216,7 +216,7 @@ def create_stage2_charts(chart_data: dict):
             }
             
             if any(gateway_data.values()):
-                fig_gateway = px.donut(
+                fig_gateway = px.pie(
                     values=list(gateway_data.values()),
                     names=list(gateway_data.keys()),
                     title="Payment Gateway Volume Distribution",
