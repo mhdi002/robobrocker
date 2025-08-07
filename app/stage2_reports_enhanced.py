@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy import and_, or_
 from app.models import PaymentData, IBRebate, CRMWithdrawals, CRMDeposit, AccountList
 from flask_login import current_user
+import traceback
 
 def filter_by_date_range(query, start_date, end_date, date_column):
     """Apply date range filter to query"""
