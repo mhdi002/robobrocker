@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-gradient-success text-white text-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-chart-line me-2"></i>Advanced Report Generation
+                    </h3>
+                    <p class="mb-0 opacity-75">Generate comprehensive financial reports with optional date filtering</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    
+                    <!-- Instructions -->
+                    <div class="alert alert-info border-0 shadow-sm mb-4">
+                        <div class="d-flex">
+                            <i class="fas fa-info-circle me-3 mt-1"></i>
+                            <div>
+                                <h6 class="mb-2">Report Generation Options:</h6>
+                                <ul class="mb-0 small">
+                                    <li><strong>Original:</strong> Traditional deal processing analysis</li>
+                                    <li><strong>Stage 2:</strong> Financial data analysis (payments, rebates, CRM data)</li>
+                                    <li><strong>Combined:</strong> Integrated view of both original and Stage 2 data</li>
+                                    <li><strong>Discrepancies:</strong> Compare CRM deposits with client payments</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="POST" class="needs-validation" novalidate>
+                        {{ form.hidden_tag() }}
+                        
+                        <!-- Report Type Selection -->
+                        <div class="mb-4">
+                            <label for="report_type" class="form-label fw-bold">
+                                <i class="fas fa-list-alt me-2"></i>Report Type
+                            </label>
+                            {{ form.report_type(class="form-select form-select-lg") }}
+                            <div class="form-text">Choose the type of analysis you want to generate</div>
+                        </div>
+                        
+                        <!-- Date Range Selection -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="start_date" class="form-label fw-bold">
+                                    <i class="fas fa-calendar-alt me-2"></i>Start Date (Optional)
+                                </label>
+                                {{ form.start_date(class="form-control", type="datetime-local") }}
+                                <div class="form-text">Leave empty to include all data from the beginning</div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="end_date" class="form-label fw-bold">
+                                    <i class="fas fa-calendar-check me-2"></i>End Date (Optional)
+                                </label>
+                                {{ form.end_date(class="form-control", type="datetime-local") }}
+                                <div class="form-text">Leave empty to include all data until now</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Date Filters -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-clock me-2"></i>Quick Date Filters
+                            </label>
+                            <div class="btn-group w-100" role="group">
+                                <button type="button" class="btn btn-outline-secondary" onclick="setDateRange('today')">Today</button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="setDateRange('week')">This Week</button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="setDateRange('month')">This Month</button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="setDateRange('quarter')">This Quarter</button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="clearDates()">All Time</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Generate Button -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            {{ form.submit(class="btn btn-success btn-lg px-5", id="generate-btn") }}
+                            <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-secondary btn-lg px-4">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Report Type Descriptions -->
+            <div class="row mt-4">
+                <div class="col-sm-6 col-lg-3 mb-3">
+                    <div class="card border-primary h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-chart-line text-primary fa-2x mb-2"></i>
+                            <h6>Original Processing</h6>
+                            <small class="text-muted">A/B/Multi book analysis with deal processing</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-sm-6 col-lg-3 mb-3">
+                    <div class="card border-success h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-coins text-success fa-2x mb-2"></i>
+                            <h6>Stage 2 Financial</h6>
+                            <small class="text-muted">Payment data, rebates, deposits & withdrawals</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-sm-6 col-lg-3 mb-3">
+                    <div class="card border-info h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-layer-group text-info fa-2x mb-2"></i>
+                            <h6>Combined Reports</h6>
+                            <small class="text-muted">Integrated view of all data sources</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-sm-6 col-lg-3 mb-3">
+                    <div class="card border-warning h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-search text-warning fa-2x mb-2"></i>
+                            <h6>Discrepancies</h6>
+                            <small class="text-muted">Find mismatches in deposit data</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function setDateRange(period) {
+    const now = new Date();
+    const startInput = document.getElementById('start_date');
+    const endInput = document.getElementById('end_date');
+    
+    let startDate, endDate = now;
+    
+    switch(period) {
+        case 'today':
+            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            break;
+        case 'week':
+            startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            break;
+        case 'month':
+            startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+            break;
+        case 'quarter':
+            const quarter = Math.floor(now.getMonth() / 3);
+            startDate = new Date(now.getFullYear(), quarter * 3, 1);
+            break;
+    }
+    
+    if (startDate) {
+        startInput.value = startDate.toISOString().slice(0, 16);
+    }
+    endInput.value = endDate.toISOString().slice(0, 16);
+}
+
+function clearDates() {
+    document.getElementById('start_date').value = '';
+    document.getElementById('end_date').value = '';
+}
+
+// Add loading animation to generate button
+document.getElementById('generate-btn').addEventListener('click', function() {
+    this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating Report...';
+    this.disabled = true;
+});
+
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+</script>
+
+<style>
+.bg-gradient-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.btn-outline-secondary:hover {
+    transform: translateY(-1px);
+}
+
+.opacity-75 { opacity: 0.75; }
+
+.form-control:focus, .form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    border-color: #28a745;
+}
+</style>
+{% endblock %}
