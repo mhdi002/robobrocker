@@ -16,7 +16,7 @@ from app.stage2_processing import (
     process_payment_data, process_ib_rebate, process_crm_withdrawals, 
     process_crm_deposit, process_account_list
 )
-from app.stage2_reports import generate_final_report, compare_crm_and_client_deposits, get_summary_data_for_charts
+from app.stage2_reports_enhanced import generate_final_report, compare_crm_and_client_deposits, get_summary_data_for_charts, check_data_sufficiency_for_charts
 
 bp = Blueprint('main', __name__)
 
