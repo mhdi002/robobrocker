@@ -24,7 +24,7 @@ with app.app_context():
             email='demo@test.com',
             role=viewer_role
         )
-        demo_user.set_password('demo123')
+        demo_user.set_password('Demo@123!')
         db.session.add(demo_user)
         db.session.commit()
         print("Demo user created successfully!")
