@@ -29,4 +29,4 @@ with app.app_context():
         db.session.commit()
         print("Demo user created successfully!")
         print("Username: demo")
-        print("Password: demo123")
+        print("Password: Demo@123!")
