@@ -27,4 +27,4 @@ if __name__ == '__main__':
     # this block is not executed. The port and host are configured
     # in the WSGI server's command.
     # For `flask run`, the host and port are specified in the Dockerfile's CMD.
-    app.run(host='0.0.0.0', port=5001, debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=False)
