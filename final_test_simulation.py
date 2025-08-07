@@ -25,19 +25,20 @@ def simulate_user_scenario():
         print("1. Simulating user file upload and processing...")
         
         # Create realistic financial data similar to what user would upload
+        num_deals = 100
         deals_data = {
-            'Deal': list(range(1, 101)),  # 100 deals
-            'Symbol': ['EURUSD', 'GBPUSD', 'USDJPY'] * 34,  # Mix of symbols
-            'Login': list(range(12345, 12445)),  # 100 different logins
-            'Notional volume in USD': [100000 + i*1000 for i in range(100)],
-            'Trader profit': [f'{500.50 + i*10:.2f} USD' for i in range(100)],
-            'Swaps': [f'{-25.00 + i*2:.2f} USD' for i in range(100)],
-            'Commission': [f'{15.00 + i:.2f} USD' for i in range(100)],
-            'TP broker profit': [f'{30.00 + i*1.5:.2f} USD' for i in range(100)],
-            'Total broker profit': [f'{45.00 + i*2:.2f} USD' for i in range(100)],
-            'Processing rule': ['Pipwise', 'Retail B-book', 'Multi'] * 34,
-            'Group': ['real\\Chinese', 'BBOOK\\Retail', 'Multi\\Mixed', 'real\\VIP'] * 25,
-            'Date & Time (UTC)': ['01.08.2025 10:00:00'] * 100
+            'Deal': list(range(1, num_deals + 1)),
+            'Symbol': (['EURUSD', 'GBPUSD', 'USDJPY'] * 34)[:num_deals],
+            'Login': list(range(12345, 12345 + num_deals)),
+            'Notional volume in USD': [100000 + i*1000 for i in range(num_deals)],
+            'Trader profit': [f'{500.50 + i*10:.2f} USD' for i in range(num_deals)],
+            'Swaps': [f'{-25.00 + i*2:.2f} USD' for i in range(num_deals)],
+            'Commission': [f'{15.00 + i:.2f} USD' for i in range(num_deals)],
+            'TP broker profit': [f'{30.00 + i*1.5:.2f} USD' for i in range(num_deals)],
+            'Total broker profit': [f'{45.00 + i*2:.2f} USD' for i in range(num_deals)],
+            'Processing rule': (['Pipwise', 'Retail B-book', 'Multi'] * 34)[:num_deals],
+            'Group': (['real\\Chinese', 'BBOOK\\Retail', 'Multi\\Mixed', 'real\\VIP'] * 25)[:num_deals],
+            'Date & Time (UTC)': ['01.08.2025 10:00:00'] * num_deals
         }
         
         deals_df = pd.DataFrame(deals_data)
